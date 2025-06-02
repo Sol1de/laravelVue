@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PlaylistController;
-use App\Http\Controllers\API\PlaylistController as APIPlaylistController;
+use App\Http\Controllers\Api\PlaylistController as APIPlaylistController;
 use App\Http\Controllers\TrackController;
 use App\Http\Controllers\ApiKeyController;
 use App\Http\Middleware\ApiKeyMiddleware;
