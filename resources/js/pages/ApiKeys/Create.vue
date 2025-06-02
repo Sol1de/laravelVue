@@ -53,7 +53,7 @@
 
 <script>
 import { useForm, Head, Link } from '@inertiajs/vue3';
-import AppLayout from '@/Layouts/AppLayout.vue';
+import AppLayout from '@/layouts/AppLayout.vue';
 
 export default {
   components: {
