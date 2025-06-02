@@ -22,6 +22,12 @@
                   :class="[route().current().includes('playlists') ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white']">
                 Playlists
                 </Link>
+                  <Link v-if="$page.props.auth.user"
+                        :href="route('api-keys.index')"
+                        class="rounded-md px-3 py-2 text-sm font-medium"
+                        :class="[route().current().includes('api-keys') ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white']">
+                      Clés API
+                  </Link>
               </div>
             </div>
           </div>
@@ -61,11 +67,18 @@
 
 <script lang="ts">
 import { Link } from '@inertiajs/vue3';
+import { defineComponent } from 'vue';
 
-export default {
-  name: 'MusicLayout',
-  components: {
-    Link,
-  },
-}
+export default defineComponent({
+    name: 'MusicLayout',
+    components: {
+        Link,
+    },
+    computed: {
+        $page() {
+            // @ts-ignore
+            return this.$root?.$page ?? {};
+        }
+    }
+});
 </script>

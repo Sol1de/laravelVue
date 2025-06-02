@@ -12,12 +12,13 @@ use Inertia\Inertia;
 
 class PlaylistController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        $playlists = Playlist::withCount('tracks')->get();
+        $playlists = Playlist::with('tracks')->get();
+
+        foreach ($playlists as $playlist) {
+            $playlist->numberOfTracks = $playlist->tracks->count();
+        }
 
         return Inertia::render('Playlist/Index', [
             'playlists' => $playlists,
@@ -55,7 +56,7 @@ class PlaylistController extends Controller
 
         $playlist->tracks()->attach($tracks->pluck('id'));
 
-        return redirect()->route('playlists.show', ['playlist' => $playlist]);
+        return redirect()->route('playlists.index');
     }
 
     /**
@@ -64,7 +65,7 @@ class PlaylistController extends Controller
     public function show(Playlist $playlist)
     {
         return Inertia::render('Playlist/Show', [
-            'playlist' => $playlist->load('tracks'),
+            'playlist' => $playlist,
         ]);
     }
 
@@ -73,11 +74,8 @@ class PlaylistController extends Controller
      */
     public function edit(Playlist $playlist)
     {
-        $tracks = Track::where('display', true)->get();
-
         return Inertia::render('Playlist/Edit', [
-            'playlist' => $playlist->load('tracks'),
-            'tracks' => $tracks,
+            'playlist' => $playlist,
         ]);
     }
 
@@ -86,18 +84,7 @@ class PlaylistController extends Controller
      */
     public function update(PlaylistRequest $request, Playlist $playlist)
     {
-        $tracks = Track::whereIn('uuid', $request->tracks)->where('display', true)->get();
-
-        if ($tracks->count() !== count($request->tracks)) {
-            throw ValidationException::withMessages(['tracks' => 'Tracks not found']);
-        }
-
-        $playlist->title = $request->title;
-        $playlist->save();
-
-        $playlist->tracks()->sync($tracks->pluck('id'));
-
-        return redirect()->route('playlists.show', ['playlist' => $playlist]);
+        //
     }
 
     /**
@@ -105,7 +92,6 @@ class PlaylistController extends Controller
      */
     public function destroy(Playlist $playlist)
     {
-        $playlist->tracks()->detach();
         $playlist->delete();
 
         return redirect()->back();
